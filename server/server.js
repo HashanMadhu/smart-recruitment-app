@@ -1,5 +1,9 @@
+// server/server.js
 // [Language: JavaScript / Node.js]
 
+// ==========================================
+// 🔴 OLD LINES (පරණ රේඛා)
+// ==========================================
 // 1. Configure dotenv to read variables from the .env file (Must be at the very top)
 // 1. .env file එකේ තියෙන දත්ත කියවන්න dotenv package එක සකස් කිරීම
 require('dotenv').config();
@@ -17,6 +21,26 @@ const mongoose = require('mongoose');
 // 3. Express ඇප් එකක් (Instance එකක්) සාදා ගන්නවා
 const app = express();
 
+
+// ==========================================
+// 🟢 NEW ADDING LINES (අලුතින් එකතු කළ රේඛා)
+// ==========================================
+// Middleware to parse incoming JSON requests (Essential for API Post Requests)
+// API එකට එන JSON දත්ත කියවිය හැකි වන ලෙස සකස් කර ගන්නා Middleware එක (Postman එකෙන් දත්ත එවන්න මේක අනිවාර්යයි)
+app.use(express.json());
+
+// Import the Auth Route file we created
+// අපි කලින් සාදාගත් Auth Route ලේඛනය සම්බන්ධ කර ගැනීම
+const auth = require('./routes/auth');
+
+// Mount the Auth Router to a specific path (/api/auth)
+// අපේ Auth දොරටුව නිල වශයෙන් පද්ධතියේ '/api/auth' ලින්ක් එකට සම්බන්ධ කිරීම
+app.use('/api/auth', auth);
+
+
+// ==========================================
+// 🔴 OLD LINES (පරණ රේඛා)
+// ==========================================
 // 4. Retrieve environment variables
 // 4. .env ලේඛනයෙන් අවශ්‍ය සැකසුම් ලබා ගැනීම
 const PORT = process.env.PORT || 5000;
@@ -24,8 +48,6 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // 5. Connect to MongoDB Database using Mongoose
 // 5. Mongoose හරහා MongoDB දත්තගබඩාව සමඟ සම්බන්ධ වීම
-
-//const uri = "mongodb+srv://hashandisanayaka95_db_user:wPGkOXNMOf9ITovm@recruitment-cluster.w2vwquh.mongodb.net/?appName=recruitment-cluster"
 mongoose.connect(MONGO_URI)
     .then(() => {
         // Prints an English log message when database connection is successful
