@@ -4,6 +4,7 @@
 // Import the User Model to interact with the MongoDB database
 // දත්තගබඩාව සමඟ ගනුදෙනු කිරීම සඳහා User Model එක සම්බන්ධ කර ගැනීම
 const User = require('../models/User');
+const bcrypt = require('bcryptjs'); 
 
 // @desc    Register a new user (පරිශීලකයෙකු අලුතින් ලියාපදිංචි කිරීම)
 // @route   POST /api/auth/register
@@ -38,5 +39,42 @@ exports.register = async (req, res, next) => {
             success: false,
             error: error.message
         });
+    }
+};
+
+exports.login = async (req, res, next) => {
+    try {
+        const {email, password} = req.body; 
+
+        //Check if email and password are provided
+        if(!email || !password){
+            return res.status(400).json({success: false, error: 'Please provide an email and Password'});
+        }
+
+        //Find the user in the database by email
+        const user = await User.findOne({email}).select('+password');
+
+        if(!user){
+            return res.status(401).json({success: false, message: 'Invalid credetials(User Not Found)'});
+        }
+
+        //Check if the provided password matches the hashed password in the database
+        const isMatch = await bcrypt.compare(password, user,password);
+
+        if(!isMatch){
+            return res.status(401).json({success: false, message: 'Invalid credetials(Password does not match)'});
+        }
+
+        //Send a successful JSON response with 200 OK status
+        res.status(200).json({
+            success: true,
+            message: 'User Login Successfully',
+            data: {id: user._id, name: user.name, email: user.email}
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        })
     }
 };
