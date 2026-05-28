@@ -35,14 +35,16 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.pre('save',async function(next){
+
+UserSchema.pre('save',async function(next){ 
     // If the password is not modified, skip hashin
     if(!this.isModified('password')){
-        next();
+        return next(); 
     }
     // Generate a salt and hash the password
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password,salt);
+    next();
 });
 
 
