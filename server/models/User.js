@@ -3,6 +3,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs'); // This is for encrypting passwords (import bcryptjs package for that)
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -45,6 +46,16 @@ UserSchema.pre('save',async function(next){
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password,salt);
 });
+
+// --- NEW ADDING LINES: SIGN JWT AND RETURN ---
+// පරිශීලකයා වෙනුවෙන් JWT ටෝකන් එකක් (ඩිජිටල් හැඳුනුම්පතක්) නිර්මාණය කිරීමේ ශ්‍රිතය
+UserSchema.methods.getSignedJwtToken = function() {
+    return jwt.sign(
+        { id: this._id }, // ටෝකන් එක ඇතුළේ සඟවන දත්තය (User ID)
+        process.env.JWT_SECRET, // අපේ රහස් යතුර
+        { expiresIn: process.env.JWT_EXPIRE } // වලංගු කාලය
+    );
+};
 
 
 module.exports = mongoose.model('User', UserSchema);
