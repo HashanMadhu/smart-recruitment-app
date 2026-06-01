@@ -24,11 +24,15 @@ exports.register = async (req, res, next) => {
             role
         });
 
+        // Create token (අලුතින් ටෝකන් එකක් සෑදීම)
+        const token = user.getSignedJwtToken();
+
         // Send a successful JSON response with 201 Created status
         // සාර්ථකව දත්ත තැන්පත් වූ බව පවසමින් 201 Status එක සමඟ JSON ප්‍රතිචාරයක් යැවීම
         res.status(201).json({
             success: true,
             message: 'User registered successfully',
+            token, 
             data: user
         });
 
@@ -65,10 +69,14 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({success: false, message: 'Invalid credetials(Password does not match)'});
         }
 
+        // Create token (ලොගින් වූ නිසා ටෝකන් එකක් සෑදීම)
+        const token = user.getSignedJwtToken();
+
         //Send a successful JSON response with 200 OK status
         res.status(200).json({
             success: true,
             message: 'User Login Successfully',
+            token, 
             data: {id: user._id, name: user.name, email: user.email}
         });
     } catch (error) {

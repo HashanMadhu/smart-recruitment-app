@@ -49,9 +49,9 @@ UserSchema.pre('save',async function(next){
 
 // --- NEW ADDING LINES: SIGN JWT AND RETURN ---
 // පරිශීලකයා වෙනුවෙන් JWT ටෝකන් එකක් (ඩිජිටල් හැඳුනුම්පතක්) නිර්මාණය කිරීමේ ශ්‍රිතය
-UserSchema.methods.getSignedJwtToken = function() {
+UserSchema.methods.getSignedJwtToken = function() { 
     return jwt.sign(
-        { id: this._id }, // ටෝකන් එක ඇතුළේ සඟවන දත්තය (User ID)
+        { id: this._id }, // ටෝකන් එක ඇතුළේ සඟවන දත්තය (User ID) 
         process.env.JWT_SECRET, // අපේ රහස් යතුර
         { expiresIn: process.env.JWT_EXPIRE } // වලංගු කාලය
     );
